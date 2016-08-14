@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FX Trading Stats</title>
+    <script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src="stomp.js"></script>
+    <script src="webjars/jquery/2.0.3/jquery.min.js"></script>
+    <script src="webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+    <script src="webjars/raphaeljs/2.1.4/raphael-min.js"></script>
+    <script src="webjars/morrisjs/0.5.1/morris.min.js"></script>
+    <link rel='stylesheet' href='webjars/morrisjs/0.5.1/morris.css'>
+    <link rel='stylesheet' href='webjars/bootstrap/3.3.7-1/css/bootstrap.css'>
+
+    <script type="text/javascript">
+        var stompClient = null;
+
+        $(document).ready(function() {
+            document.getElementById("currentDate").innerHTML = getCurrentDateString();
+            connect();
+            populateFxTable();
+            populateStats();
+        });
+
+        function connect() {
+            var socket = new SockJS('/service');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/fx/update', function(update){
+                    updateFxTable(JSON.parse(update.body));
+                });
+            });
+        }
+
+        function populateStats() {
+            $.getJSON( "/api/stats", function( data ) {
+                if (data.activeUsers < 1 && data.activeUsers < 1 && data.currencyPairFrequency.length < 1) {
+                    $('#currentStatistics').hide();
+                }
+
+                if (data.activeUsers > 0) {
+                    populateActiveUserChart(data.activeUsers);
+                }
+                if (data.activeUsers > 0) {
+                    populateTradesPlacedChart(data.tradesPlaced);
+                }
+
+                populateCurrencyChart(data.currencyPairFrequency);
+                populateCountryChart(data.originatingCountryFrequency);
+            });
+        }
+
+        function populateTradesPlacedChart(tradesPlaced) {
+            Morris.Donut({
+              element: 'tradesPlaced',
+              data: [
+                {label: "Trades Placed", value: tradesPlaced}
+              ]
+            });
+        }
+
+        function populateActiveUserChart(activeUsers) {
+            Morris.Donut({
+                  element: 'activeUserChart',
+                  data: [
+                    {label: "Active Users", value: activeUsers}
+                  ]
+            });
+        }
+
+        function populateCurrencyChart(currencyPairMap) {
+            var barChartData = [];
+            $.each( currencyPairMap, function(index,value){
+                barChartData.push({y: index, a: value});
+            });
+            if (barChartData.length) {
+                Morris.Bar({
+                  element: 'currencyPairTrades',
+                  data: barChartData,
+                  xkey: 'y',
+                  ykeys: ['a'],
+                  labels: ['Trades Placed']
+                });
+            }
+        }
+
+        function populateCountryChart(originatingCountryMap) {
+            var barChartData = [];
+            $.each( originatingCountryMap, function(index,value){
+                barChartData.push({y: index, a: value});
+            });
+            if (barChartData.length) {
+                Morris.Bar({
+                  element: 'originatingCountryTrades',
+                  data: barChartData,
+                  xkey: 'y',
+                  ykeys: ['a'],
+                  labels: ['Trades Originated From']
+                });
+            }
+        }
+
+        function populateFxTable() {
+            $.getJSON( "/api/fx", function( data ) {
+              $.each( data, function( i, update ) {
+                var id = update.currencyPair.replace('/', '');
+                addUpdateToTable(id, update);
+              });
+            });
+        }
+
+        function updateFxTable(update) {
+           var id = update.currencyPair.replace('/', '')
+           var row = $('#' + id);
+
+            if (row.length) {
+                row.find('.buy').html(update.buy);
+                row.find('.sell').html(update.sell);
+                row.find('.spread').html(update.spread);
+                row.find('.rateChange').html(update.rateChange);
+                row.find('.lastUpdated').html(update.lastUpdated);
+            } else {
+                addUpdateToTable(id, update);
+            }
+        }
+
+        function addUpdateToTable(id, update) {
+            $('#fxRateTable tbody')
+                .append(
+                    '<tr id="' + id + '">'
+                        + '<td class="currencyPair">' + update.currencyPair + '</td>'
+                        + '<td class="buy">' + update.buy + '</td>'
+                        + '<td class="sell">' + update.sell + '</td>'
+                        + '<td class="spread">' + update.spread + '</td>'
+                        + '<td class="rateChange">' + update.rateChange + '</td>'
+                        + '<td class="lastUpdated">' + update.lastUpdated + '</td>'
+                    + '</tr>');
+        }
+
+        function getCurrentDateString() {
+            var monthNames = [
+              "January", "February", "March", "April", "May", "June", "July",
+              "August", "September", "October", "November", "December"
+            ];
+
+            var date = new Date();
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+            return (day + ' ' + monthNames[monthIndex] + ' ' + year);
+        }
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="currentStatistics" class="row" style="margin-bottom: 25px;">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-lg-12 col-md-12">
+                    <div class="col-lg-12">
+                        <h2>Trading Statistics - <span id="currentDate"></span></h2>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div id="activeUserChart"></div>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div id="tradesPlaced"></div>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div id="currencyPairTrades"></div>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div id="originatingCountryTrades"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="col-lg-12 col-md-12">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-lg-12 col-md-12">
+                            <h2>Latest Fx Updates</h2>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <table id="fxRateTable" class="table">
+                                <tbody>
+                                <tr>
+                                    <th>Spot FX</th>
+                                    <th>Buy</th>
+                                    <th>Sell</th>
+                                    <th>Spread</th>
+                                    <th>Change</th>
+                                    <th>Last Updated</th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<noscript>
+    <h2>Please enable Javascript and reload this page.s</h2>
+</noscript>
+</body>
+</html>

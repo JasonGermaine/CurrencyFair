@@ -2,10 +2,7 @@ package com.currencyfair.trading.integration.db;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -13,17 +10,34 @@ import java.sql.Timestamp;
  * @author jasongermaine.
  */
 @Data
-@Entity
+@Entity(name = "TRADE")
 public class TradeEntity {
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    Long tradeId;
-    Long userId;
-    String currencyFrom;
-    String currencyTo;
-    BigDecimal amountSell;
-    BigDecimal amountBuy;
-    BigDecimal rate;
-    String originatingCountry;
-    Timestamp timePlaced;
+    private Long tradeId;
+
+    @Column
+    private Long userId;
+
+    @Column
+    private String baseCurrency;
+
+    @Column
+    private String counterCurrency;
+
+    @Column
+    private BigDecimal ask;
+
+    @Column
+    private BigDecimal bid;
+
+    @Column
+    private BigDecimal fxRate;
+
+    @Column
+    private String originatingCountry;
+
+    @Column
+    private Timestamp executionTime;
 }

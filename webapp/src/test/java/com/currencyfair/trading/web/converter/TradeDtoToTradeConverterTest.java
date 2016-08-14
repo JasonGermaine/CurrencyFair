@@ -1,6 +1,6 @@
 package com.currencyfair.trading.web.converter;
 
-import com.currencyfair.trading.domain.Trade;
+import com.currencyfair.trading.domain.model.Trade;
 import com.currencyfair.trading.intf.TradeDTO;
 import org.junit.Test;
 
@@ -38,10 +38,10 @@ public class TradeDtoToTradeConverterTest {
         final Trade trade = new TradeDtoToTradeConverter().convert(dto);
 
         assertThat(trade.getUserId()).isEqualTo(userId);
-        assertThat(trade.getBuyPrice()).isEqualByComparingTo(amountBuy);
-        assertThat(trade.getSellPrice()).isEqualByComparingTo(amountSell);
-        assertThat(trade.getFxPair().getFrom()).isEqualTo(currencyFrom);
-        assertThat(trade.getFxPair().getTo()).isEqualTo(currencyTo);
+        assertThat(trade.getAsk().value()).isEqualByComparingTo(amountBuy);
+        assertThat(trade.getBid().value()).isEqualByComparingTo(amountSell);
+        assertThat(trade.getCurrencyPair().getBaseCurrency()).isEqualTo(currencyFrom);
+        assertThat(trade.getCurrencyPair().getCounterCurrency()).isEqualTo(currencyTo);
         assertThat(trade.getFxRate()).isEqualTo(rate);
         assertThat(trade.getOriginatingCountry()).isEqualTo(originatingCountry);
         assertThat(trade.getExecutionTime().toInstant()).isEqualByComparingTo(timePlaced.toInstant());

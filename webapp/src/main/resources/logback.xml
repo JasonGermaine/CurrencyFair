@@ -7,7 +7,7 @@
         <file>${LOG_LOCATION}/${MAIN_LOGGER_NAME}.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} user=%X{user} - %msg%n
             </Pattern>
         </encoder>
 
@@ -24,7 +24,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
-                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} user=%X{user}- %msg%n
             </Pattern>
         </layout>
     </appender>
@@ -35,9 +35,10 @@
 
     <logger name="com.currencyfair.trading" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_MAIN_LOGGER" />
+        <appender-ref ref="CONSOLE" />
     </logger>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>
 </configuration>

@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>db-repository</module>
+        <module>client-messaging</module>
     </modules>
     <properties>
         <h2.version>1.4.192</h2.version>

@@ -2,6 +2,7 @@ package com.currencyfair.trading.web.controller;
 
 import com.currencyfair.trading.TradingApplication;
 import com.currencyfair.trading.web.converter.ConverterConfiguration;
+import com.currencyfair.trading.web.jms.JmsConfiguration;
 import com.currencyfair.trading.web.service.TradeService;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,11 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author jasongermaine.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TradingApplication.class, ConverterConfiguration.class})
+@ContextConfiguration(classes = {TradingApplication.class, ConverterConfiguration.class, JmsConfiguration.class})
 @WebAppConfiguration
-public class TradeIntegrationTest {
+@TestPropertySource(locations="classpath:test.properties")
+public class TradeIT {
 
-    private static final String TRADE_PATH = "/trade/";
+    private static final String TRADE_PATH = "/api/trade";
 
     @Autowired
     private ConversionService conversionService;

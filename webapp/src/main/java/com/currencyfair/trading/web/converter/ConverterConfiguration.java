@@ -15,7 +15,7 @@ public class ConverterConfiguration {
     @Bean
     public ConversionService conversionService() {
         ConversionServiceFactoryBean factoryBean = new ConversionServiceFactoryBean();
-        factoryBean.setConverters(Sets.newHashSet(new TradeDtoToTradeConverter()));
+        factoryBean.setConverters(Sets.newHashSet(new TradeDtoToTradeConverter(), new TradeStatisticToTradeStatisticDtoConverter()));
         factoryBean.afterPropertiesSet();
         return factoryBean.getObject();
     }
