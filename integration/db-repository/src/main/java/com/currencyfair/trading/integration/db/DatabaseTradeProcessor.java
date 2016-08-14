@@ -54,7 +54,7 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     public TradeStatistic retrieveProcessedTradeStatisticsForCurrentDate() {
         final ZoneId zone = ZoneId.of("UTC");
         final Timestamp start = Timestamp.from(LocalDate.now().atStartOfDay(zone).toInstant());
-        final Timestamp end = Timestamp.from(ZonedDateTime.now(zone).toInstant());
+        final Timestamp end = Timestamp.from(LocalDateTime.now().atZone(zone).toInstant());
         final List<TradeEntity> entities = tradeRepository.findByExecutionTimeBetween(start, end);
 
         final List<Trade> trades = entities.stream().map(entityToTradeFunction).collect(Collectors.toList());
