@@ -1,6 +1,6 @@
 package com.currencyfair.trading.integration.db;
 
-import com.currencyfair.trading.domain.*;
+import com.currencyfair.trading.domain.TradeProcessor;
 import com.currencyfair.trading.domain.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -69,7 +70,7 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     @PostConstruct
     private void init() {
         final CurrencyPair pair = CurrencyPair.of("EUR", "GBP");
-        final Trade trade = Trade.builder()
+        final Trade tradeOne = Trade.builder()
                 .currencyPair(pair)
                 .bid(Bid.of(new BigDecimal(0.8634)))
                 .ask(Ask.of(new BigDecimal(0.8644)))
@@ -78,6 +79,15 @@ public class DatabaseTradeProcessor implements TradeProcessor {
                 .executionTime(ZonedDateTime.of(LocalDate.now(), LocalTime.now().minusHours(3), ZoneId.of("UTC")))
                 .userId(0)
                 .build();
-        tradeRepository.save(tradeToEntityFunction.apply(trade));
+        final Trade tradeTwo = Trade.builder()
+                .currencyPair(pair)
+                .bid(Bid.of(new BigDecimal(0.8634)))
+                .ask(Ask.of(new BigDecimal(0.8644)))
+                .fxRate(new BigDecimal(0.86339))
+                .originatingCountry("IRE")
+                .executionTime(LocalDateTime.now().atZone(ZoneId.of("UTC")))
+                .userId(0)
+                .build();
+        tradeRepository.save(Arrays.asList(tradeToEntityFunction.apply(tradeOne), tradeToEntityFunction.apply(tradeTwo)));
     }
 }

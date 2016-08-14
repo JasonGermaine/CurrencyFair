@@ -1,7 +1,7 @@
 package com.currencyfair.trading.web.service;
 
-import com.currencyfair.trading.domain.model.Trade;
 import com.currencyfair.trading.domain.TradeProcessor;
+import com.currencyfair.trading.domain.model.Trade;
 import com.currencyfair.trading.domain.model.TradeStatistic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
