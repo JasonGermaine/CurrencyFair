@@ -62,8 +62,8 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     }
 
     @ManagedOperation(description = "Show data in DB.")
-    public List<TradeEntity> displayTrades() {
-        return tradeRepository.findAll();
+    public List<String> displayTrades() {
+        return tradeRepository.findAll().stream().map(TradeEntity::toString).collect(Collectors.toList());
     }
 
     @PostConstruct
