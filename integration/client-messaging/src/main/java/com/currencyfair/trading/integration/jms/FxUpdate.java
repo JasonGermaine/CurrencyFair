@@ -13,10 +13,10 @@ import java.util.Date;
 public class FxUpdate implements Serializable {
     private String currencyPair;
     private String lastUpdated;
-    private BigDecimal rateChange;
-    private BigDecimal buy;
-    private BigDecimal sell;
-    private BigDecimal spread;
+    private String rateChange;
+    private String buy;
+    private String sell;
+    private String spread;
 
     public String getCurrencyPair() {
         return currencyPair;
@@ -34,35 +34,35 @@ public class FxUpdate implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    public BigDecimal getRateChange() {
+    public String getRateChange() {
         return rateChange;
     }
 
-    public void setRateChange(BigDecimal rateChange) {
+    public void setRateChange(String rateChange) {
         this.rateChange = rateChange;
     }
 
-    public BigDecimal getBuy() {
+    public String getBuy() {
         return buy;
     }
 
-    public void setBuy(BigDecimal buy) {
+    public void setBuy(String buy) {
         this.buy = buy;
     }
 
-    public BigDecimal getSell() {
+    public String getSell() {
         return sell;
     }
 
-    public void setSell(BigDecimal sell) {
+    public void setSell(String sell) {
         this.sell = sell;
     }
 
-    public BigDecimal getSpread() {
+    public String getSpread() {
         return spread;
     }
 
-    public void setSpread(BigDecimal spread) {
+    public void setSpread(String spread) {
         this.spread = spread;
     }
 }

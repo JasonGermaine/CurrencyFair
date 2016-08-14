@@ -19,15 +19,20 @@ public class FxUpdateConverter {
     }
 
     public FxUpdate convert(final Trade receivedTrade, final Trade cachedTrade) {
-        final BigDecimal rateChange = cachedTrade == null ? BigDecimal.ZERO : receivedTrade.getFxRate().subtract(cachedTrade.getFxRate()).setScale(4, BigDecimal.ROUND_HALF_UP);
+        final String rateChange = cachedTrade == null
+                ? "0"
+                : toFormattedString(receivedTrade.getFxRate().subtract(cachedTrade.getFxRate()));
         final FxUpdate fxUpdate = new FxUpdate();
-        final BigDecimal spread = receivedTrade.getSpread().value().setScale(4, BigDecimal.ROUND_HALF_UP);
         fxUpdate.setCurrencyPair(receivedTrade.getCurrencyPair().toString());
         fxUpdate.setLastUpdated(formatter.format(receivedTrade.getExecutionTime()));
         fxUpdate.setRateChange(rateChange);
-        fxUpdate.setBuy(receivedTrade.getAsk().value().setScale(4, BigDecimal.ROUND_HALF_UP));
-        fxUpdate.setSell(receivedTrade.getBid().value().setScale(4, BigDecimal.ROUND_HALF_UP));
-        fxUpdate.setSpread(spread);
+        fxUpdate.setBuy(toFormattedString(receivedTrade.getAsk().value()));
+        fxUpdate.setSell(toFormattedString(receivedTrade.getBid().value()));
+        fxUpdate.setSpread(toFormattedString(receivedTrade.getSpread().value()));
         return fxUpdate;
+    }
+
+    private String toFormattedString(final BigDecimal value) {
+        return value.setScale(4, BigDecimal.ROUND_HALF_UP).toPlainString();
     }
 }

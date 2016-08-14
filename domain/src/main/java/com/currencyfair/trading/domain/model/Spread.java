@@ -13,7 +13,13 @@ import java.math.BigDecimal;
 public class Spread implements Serializable {
 
     public static Spread calculate(final Bid bid, final Ask ask) {
-        return new Spread(ask.value().subtract(bid.value()));
+        // % Spread = 100 × (Ask Price - Bid Price) / Ask Price
+        final BigDecimal askValue = ask.value();
+        final BigDecimal diff = askValue.subtract(bid.value());
+        final BigDecimal spreadValue =
+                new BigDecimal(100).multiply(
+                        diff.divide(askValue, 4, BigDecimal.ROUND_HALF_UP));
+        return new Spread(spreadValue);
     }
 
     private final BigDecimal spread;

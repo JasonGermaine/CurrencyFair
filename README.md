@@ -1,6 +1,11 @@
 [![Build Status](https://travis-ci.org/JasonGermaine/CurrencyFair.svg?branch=master)](https://travis-ci.org/JasonGermaine/CurrencyFair)
 # CurrencyFair 
 
+##### Features
+- Consumes incoming trades and persists them in an [in-memory] database
+- Provides a stream of Forex updates to a frontend UI
+- Provides daily statistics based off of the persisted trade info
+
 ##### Requirements
  - Java 8
  - Maven
