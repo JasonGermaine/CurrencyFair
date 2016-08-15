@@ -46,7 +46,6 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     }
 
     @Override
-    @CacheEvict
     public Long process(final Trade trade) {
         final TradeEntity entity = tradeToEntityFunction.apply(trade);
 
@@ -55,7 +54,6 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     }
 
     @Override
-    @Cacheable("stats")
     public TradeStatistic retrieveProcessedTradeStatistics(final ZonedDateTime start, final ZonedDateTime end) {
         final List<TradeEntity> entities = tradeRepository.findByExecutionTimeBetween(Timestamp.from(start.toInstant()), Timestamp.from(end.toInstant()));
 

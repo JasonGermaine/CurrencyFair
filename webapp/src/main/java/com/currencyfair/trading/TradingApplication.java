@@ -14,7 +14,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 @EnableJpaRepositories
 @EnableJms
 @EnableWebSocketMessageBroker
-@EnableCaching
 public class TradingApplication {
 
     public static void main(String[] args) {
