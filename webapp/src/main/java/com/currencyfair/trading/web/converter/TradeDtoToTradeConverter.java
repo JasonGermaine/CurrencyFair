@@ -8,6 +8,7 @@ import com.currencyfair.trading.intf.TradeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -25,7 +26,8 @@ public class TradeDtoToTradeConverter implements Converter<TradeDTO, Trade> {
 
         log.debug("Converting TradeDTO to Trade. TradeDTO={}", dto);
         final CurrencyPair currencyPair = CurrencyPair.of(dto.getCurrencyFrom(), dto.getCurrencyTo());
-        final ZonedDateTime tradeTime = ZonedDateTime.ofInstant(dto.getTimePlaced().toInstant(), ZoneId.of("UTC"));
+        final ZoneId zone = ZoneId.of("UTC");
+        final ZonedDateTime tradeTime = LocalDateTime.ofInstant(dto.getTimePlaced().toInstant(), zone).atZone(zone);
         return Trade.builder()
                 .userId(dto.getUserId())
                 .currencyPair(currencyPair)
