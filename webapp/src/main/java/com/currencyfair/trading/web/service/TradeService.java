@@ -9,6 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 /**
  * @author jasongermaine.
  */
@@ -37,6 +43,9 @@ public class TradeService {
 
     public TradeStatistic retrieveTradeStatistics() {
         log.info("Retrieving trade statistics for current date");
-        return processor.retrieveProcessedTradeStatisticsForCurrentDate();
+        final ZoneId zone = ZoneId.of("UTC");
+        final ZonedDateTime start = LocalDate.now().atStartOfDay(zone);
+        final ZonedDateTime end = LocalDateTime.now().atZone(zone);
+        return processor.retrieveProcessedTradeStatistics(start, end);
     }
 }

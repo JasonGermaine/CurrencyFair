@@ -3,7 +3,10 @@ package com.currencyfair.trading.integration.db;
 import com.currencyfair.trading.domain.TradeProcessor;
 import com.currencyfair.trading.domain.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
@@ -43,6 +46,7 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     }
 
     @Override
+    @CacheEvict
     public Long process(final Trade trade) {
         final TradeEntity entity = tradeToEntityFunction.apply(trade);
 
@@ -51,11 +55,9 @@ public class DatabaseTradeProcessor implements TradeProcessor {
     }
 
     @Override
-    public TradeStatistic retrieveProcessedTradeStatisticsForCurrentDate() {
-        final ZoneId zone = ZoneId.of("UTC");
-        final Timestamp start = Timestamp.from(LocalDate.now().atStartOfDay(zone).toInstant());
-        final Timestamp end = Timestamp.from(LocalDateTime.now().atZone(zone).toInstant());
-        final List<TradeEntity> entities = tradeRepository.findByExecutionTimeBetween(start, end);
+    @Cacheable("stats")
+    public TradeStatistic retrieveProcessedTradeStatistics(final ZonedDateTime start, final ZonedDateTime end) {
+        final List<TradeEntity> entities = tradeRepository.findByExecutionTimeBetween(Timestamp.from(start.toInstant()), Timestamp.from(end.toInstant()));
 
         final List<Trade> trades = entities.stream().map(entityToTradeFunction).collect(Collectors.toList());
 

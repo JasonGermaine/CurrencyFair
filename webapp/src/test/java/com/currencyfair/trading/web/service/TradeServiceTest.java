@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.jms.core.JmsTemplate;
 
+import java.time.ZonedDateTime;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,7 +35,7 @@ public class TradeServiceTest {
     @Test
     public void testRetrieveTradeStatistics() throws Exception {
         final TradeStatistic expected = TradeStatistic.builder().build();
-        when(processor.retrieveProcessedTradeStatisticsForCurrentDate()).thenReturn(expected);
+        when(processor.retrieveProcessedTradeStatistics(any(), any())).thenReturn(expected);
 
         final TradeStatistic tradeStatistic = service.retrieveTradeStatistics();
 

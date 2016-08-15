@@ -3,6 +3,8 @@ package com.currencyfair.trading.domain;
 import com.currencyfair.trading.domain.model.Trade;
 import com.currencyfair.trading.domain.model.TradeStatistic;
 
+import java.time.ZonedDateTime;
+
 /**
  * @author jasongermaine.
  */
@@ -19,5 +21,5 @@ public interface TradeProcessor {
      * Retrieves {@link TradeStatistic} for the current date
      * @return statistics
      */
-    TradeStatistic retrieveProcessedTradeStatisticsForCurrentDate();
+    TradeStatistic retrieveProcessedTradeStatistics(final ZonedDateTime start, final ZonedDateTime end);
 }
